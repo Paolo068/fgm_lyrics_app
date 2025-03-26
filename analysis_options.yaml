@@ -1,0 +1,18 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    prefer_const_constructors: warning
+    prefer_const_declarations: warning
+    prefer_const_literals_to_create_immutables: warning
+    unnecessary_const: warning
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+
+linter:
+  rules:
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_const_literals_to_create_immutables
+    - unnecessary_const
