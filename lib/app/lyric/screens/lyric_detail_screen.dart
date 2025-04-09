@@ -28,25 +28,15 @@ class _LyricDetailScreenState extends State<LyricDetailScreen>
 
   @override
   void initState() {
-    super.initState();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    String hymnText =
-        "*${widget.lyric.songId}.  ${widget.lyric.songTitle}*\n\n"
-        "${widget.lyric.enLyrics.first}\n\n\n"
-        "${widget.lyric.chorus.isNotEmpty
-            ? widget.isEnglish
-                ? "*Chorus :*\n"
-                : "*Refrain :*\n"
-            : ''}"
-        "${widget.lyric.chorus.isNotEmpty ? "${widget.lyric.chorus}\n\n\n" : ''}"
-        "${widget.lyric.enLyrics.length > 1 ? widget.lyric.enLyrics.sublist(1, widget.lyric.enLyrics.length - 1).map((lyric) => "${lyric.trim()}\n\n").join(' ').toString() : ''}";
 
     return Scaffold(
       appBar: AppBar(
@@ -93,5 +83,17 @@ class _LyricDetailScreenState extends State<LyricDetailScreen>
         ),
       ),
     );
+  }
+
+  String get hymnText {
+    return "*${widget.lyric.songId}.  ${widget.lyric.songTitle}*\n\n"
+      "${widget.lyric.enLyrics.first}\n\n\n"
+      "${widget.lyric.chorus.isNotEmpty
+          ? widget.isEnglish
+              ? "*Chorus :*\n"
+              : "*Refrain :*\n"
+          : ''}"
+      "${widget.lyric.chorus.isNotEmpty ? "${widget.lyric.chorus}\n\n\n" : ''}"
+      "${widget.lyric.enLyrics.length > 1 ? widget.lyric.enLyrics.sublist(1, widget.lyric.enLyrics.length - 1).map((lyric) => "${lyric.trim()}\n\n").join(' ').toString() : ''}";
   }
 }
