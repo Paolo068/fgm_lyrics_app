@@ -11,7 +11,9 @@ class LyricFirstVerse extends StatelessWidget {
     return Text(
       enLyrics.first,
       textAlign: TextAlign.center,
-      style: context.textTheme.bodyLarge,
+      style: context.textTheme.bodyLarge!.copyWith(
+        fontSize: 18,
+      ),
     );
   }
 }

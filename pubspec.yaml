@@ -4,27 +4,28 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.1
 
 dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.2.1
-  # assets_audio_player: ^3.1.1
-  shared_preferences: ^2.5.2
+  shared_preferences: ^2.5.3
   equatable: ^2.0.7
-  flutter_riverpod: ^2.6.1
-  share_plus: ^10.1.4
+  share_plus: ^11.0.0
   audioplayers: ^6.4.0
-  watch_it: ^1.6.5
+  flutter_riverpod: ^2.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
+  custom_lint: ^0.7.5
+  riverpod_lint: ^2.6.5
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/EN.json
-    - assets/FR.json
+    - assets/en.json
+    - assets/fr.json
     - assets/songs/

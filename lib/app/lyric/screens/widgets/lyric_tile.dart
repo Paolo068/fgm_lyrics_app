@@ -7,28 +7,33 @@ class LyricTile extends StatelessWidget {
   const LyricTile({
     super.key,
     required this.lyric,
-    required this.isEnglish,
-    this.contentPadding = EdgeInsets.zero,
+    required this.languageIsEnglish,
   });
-  final EdgeInsetsGeometry? contentPadding;
   final Lyric? lyric;
-  final bool isEnglish;
+  final bool languageIsEnglish;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        context.push(LyricDetailScreen(lyric: lyric!, isEnglish: isEnglish));
+        context.push(
+          LyricDetailScreen(
+            lyric: lyric!,
+            languageIsEnglish: languageIsEnglish,
+          ),
+        );
       },
-      contentPadding: contentPadding,
+      minVerticalPadding: 0,
+      dense: true,
+      contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       leading: Text(
         "${lyric?.id}",
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: context.textTheme.bodyMedium,
       ),
       title: Text(
         lyric?.songTitle ?? '',
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: context.textTheme.bodyMedium,
         overflow: TextOverflow.ellipsis,
       ),
     );

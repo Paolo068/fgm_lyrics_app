@@ -6,9 +6,13 @@ analyzer:
     prefer_const_declarations: warning
     prefer_const_literals_to_create_immutables: warning
     unnecessary_const: warning
+
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    
+  plugins:
+    - custom_lint
 
 linter:
   rules:

@@ -2,22 +2,30 @@ import 'dart:convert';
 
 import 'package:fgm_lyrics_app/core/models/lyric.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
-
-final lyricRepositoryProvider = Provider<LyricRepository>((ref) {
-  return LyricRepository();
-});
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LyricRepository {
   Future<List<Lyric>> loadFrenchLyrics() async {
-    final response = await rootBundle.loadString('assets/FR.json');
-    final json = jsonDecode(response);
-    return (json['songs'] as List).map((e) => Lyric.fromMap(e)).toList();
+    try {
+      final response = await rootBundle.loadString('assets/fr.json');
+      final json = jsonDecode(response);
+      return (json['songs'] as List).map((e) => Lyric.fromMap(e)).toList();
+    } catch (e) {
+      throw Exception('Failed to load French lyrics: $e');
+    }
   }
 
   Future<List<Lyric>> loadEnglishLyrics() async {
-    final response = await rootBundle.loadString('assets/EN.json');
-    final json = jsonDecode(response);
-    return (json['songs'] as List).map((e) => Lyric.fromMap(e)).toList();
+    try {
+      final response = await rootBundle.loadString('assets/en.json');
+      final json = jsonDecode(response);
+      return (json['songs'] as List).map((e) => Lyric.fromMap(e)).toList();
+    } catch (e) {
+      throw Exception('Failed to load English lyrics: $e');
+    }
   }
 }
+
+final lyricRepositoryProvider = Provider<LyricRepository>(
+  (ref) => LyricRepository(),
+);

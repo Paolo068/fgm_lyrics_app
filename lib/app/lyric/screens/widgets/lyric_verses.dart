@@ -20,7 +20,9 @@ class LyricVerses extends StatelessWidget {
                       child: Text(
                         '$lyric\n',
                         textAlign: TextAlign.center,
-                        style: context.textTheme.bodyLarge,
+                        style: context.textTheme.bodyLarge!.copyWith(
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   )

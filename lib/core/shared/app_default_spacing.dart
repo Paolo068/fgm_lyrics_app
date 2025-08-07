@@ -6,10 +6,12 @@ class AppDefaultSpacing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return  GestureDetector(
+    return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: SafeArea(child: Padding(padding: const EdgeInsets.all(16), child: child)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: child,
+      ),
     );
   }
 }

@@ -4,10 +4,14 @@ import 'package:fgm_lyrics_app/core/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 
 class LyricTitle extends StatelessWidget {
-  const LyricTitle({super.key, required this.lyric, required this.isEnglish});
+  const LyricTitle({
+    super.key,
+    required this.lyric,
+    required this.languageIsEnglish,
+  });
 
   final Lyric lyric;
-  final bool isEnglish;
+  final bool languageIsEnglish;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -24,12 +28,14 @@ class LyricTitle extends StatelessWidget {
             children: [
               lyric.author.isNotEmpty
                   ? Text(
-                    '${isEnglish ? 'Author: ' : 'Auteur: '} ${lyric.author}',
+                    '${languageIsEnglish ? 'Author: ' : 'Auteur: '} ${lyric.author}',
                   )
                   : const SizedBox.shrink(),
               const SizedBox(height: 3),
               lyric.key.isNotEmpty
-                  ? Text('${isEnglish ? 'Key: ' : 'Clef: '} ${lyric.key}')
+                  ? Text(
+                    '${languageIsEnglish ? 'Key: ' : 'Clef: '} ${lyric.key}',
+                  )
                   : const SizedBox.shrink(),
             ],
           ),

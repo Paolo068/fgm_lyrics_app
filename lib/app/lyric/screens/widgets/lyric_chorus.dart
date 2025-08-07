@@ -1,3 +1,4 @@
+import 'package:fgm_lyrics_app/core/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class LyricChorus extends StatelessWidget {
@@ -7,18 +8,13 @@ class LyricChorus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: Center(
-        child: Text(
-          chorus,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontStyle: FontStyle.italic,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+    return Text(
+      chorus,
+      textAlign: TextAlign.center,
+      style: context.textTheme.titleLarge!.copyWith(
+        fontStyle: FontStyle.italic,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
       ),
     );
   }

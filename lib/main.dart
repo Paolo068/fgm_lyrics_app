@@ -1,34 +1,39 @@
-import 'package:fgm_lyrics_app/app/locale/locale_notifer.dart';
-import 'package:fgm_lyrics_app/app/lyric/notifier/lyric_notifier.dart';
-import 'package:fgm_lyrics_app/app/lyric/screens/lyric_list_screen.dart'
-    show LyricListScreen;
+import 'package:fgm_lyrics_app/app/locale/locale_controller.dart';
+import 'package:fgm_lyrics_app/app/lyric/lyric_controller.dart';
+import 'package:fgm_lyrics_app/app/lyric/screens/lyric_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    show
-        ConsumerWidget,
-        ProviderContainer,
-        UncontrolledProviderScope,
-        WidgetRef;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final container = ProviderContainer();
-  container.read(deviceLocaleProvider);
-  container.read(frenchLyricProvider);
-  container.read(englishLyricProvider);
-  runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      title: 'FGM Hymns',
-      theme: ThemeData(fontFamily: GoogleFonts.ebGaramond().fontFamily),
-      home: const LyricListScreen(),
+  Widget build(BuildContext context) {
+    return _EagerInitializer(
+      child: MaterialApp(
+        title: 'FGM Hymns',
+        theme: ThemeData(fontFamily: GoogleFonts.ebGaramond().fontFamily),
+        home: const LyricListScreen(),
+      ),
     );
+  }
+}
+
+class _EagerInitializer extends ConsumerWidget {
+  final Widget child;
+  const _EagerInitializer({required this.child});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(deviceLocaleProvider);
+    ref.watch(frenchLyricProvider);
+    ref.watch(englishLyricProvider);
+    return child;
   }
 }

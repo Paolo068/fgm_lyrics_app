@@ -1,4 +1,5 @@
-import 'package:fgm_lyrics_app/app/locale/locale_notifer.dart';
+import 'package:fgm_lyrics_app/app/locale/locale_controller.dart';
+import 'package:fgm_lyrics_app/app/lyric/lyric_controller.dart';
 import 'package:fgm_lyrics_app/app/lyric/screens/favorite_screen.dart';
 import 'package:fgm_lyrics_app/app/lyric/screens/lyric_detail_screen.dart';
 import 'package:fgm_lyrics_app/app/lyric/screens/widgets/lyric_tile.dart';
@@ -6,24 +7,18 @@ import 'package:fgm_lyrics_app/core/models/lyric.dart';
 import 'package:fgm_lyrics_app/core/shared/app_default_spacing.dart';
 import 'package:fgm_lyrics_app/core/utils/context_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    show ConsumerState, ConsumerStatefulWidget;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../notifier/lyric_notifier.dart';
-
-class LyricListScreen extends ConsumerStatefulWidget {
+class LyricListScreen extends ConsumerWidget {
   const LyricListScreen({super.key});
   @override
-  ConsumerState<LyricListScreen> createState() => _LyricListScreenState();
-}
-
-class _LyricListScreenState extends ConsumerState<LyricListScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final isEnglish = ref.watch(deviceLocaleProvider) == 'en';
+  Widget build(BuildContext context, WidgetRef ref) {
+    final languageIsEnglish = ref.watch(deviceLocaleProvider) == 'en';
     final lyrics =
-        ref.watch(isEnglish ? englishLyricProvider : frenchLyricProvider).value;
+        languageIsEnglish
+            ? ref.watch(englishLyricProvider).value
+            : ref.watch(frenchLyricProvider).value;
 
     return Theme(
       data: context.theme.copyWith(
@@ -36,17 +31,17 @@ class _LyricListScreenState extends ConsumerState<LyricListScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                setState(() {
-                  ref
-                      .read(deviceLocaleProvider.notifier)
-                      .setLocale(isEnglish ? 'fr' : 'en');
-                });
+                ref
+                    .read(deviceLocaleProvider.notifier)
+                    .setLocale(languageIsEnglish ? 'fr' : 'en');
               },
-              child: Text(isEnglish ? 'FR' : 'EN'),
+              child: Text(languageIsEnglish ? 'FR' : 'EN'),
             ),
             IconButton(
               onPressed: () {
-                context.push(const FavoriteScreen());
+                context.push(
+                  FavoriteScreen(languageIsEnglish: languageIsEnglish),
+                );
               },
               icon: const Icon(Icons.favorite_border_rounded),
             ),
@@ -72,7 +67,10 @@ class _LyricListScreenState extends ConsumerState<LyricListScreen> {
                         lyric.songTitle,
                       ); // Close search on selection
                       context.push(
-                        LyricDetailScreen(lyric: lyric, isEnglish: isEnglish),
+                        LyricDetailScreen(
+                          lyric: lyric,
+                          languageIsEnglish: languageIsEnglish,
+                        ),
                       );
                     },
                   );
@@ -80,14 +78,17 @@ class _LyricListScreenState extends ConsumerState<LyricListScreen> {
               },
             ),
           ],
-          title: Text(isEnglish ? 'English' : 'French'),
+          title: Text(languageIsEnglish ? 'English' : 'French'),
         ),
         body: AppDefaultSpacing(
           child: ListView.separated(
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               final lyric = lyrics?[index];
-              return LyricTile(lyric: lyric, isEnglish: isEnglish);
+              return LyricTile(
+                lyric: lyric,
+                languageIsEnglish: languageIsEnglish,
+              );
             },
             separatorBuilder: (BuildContext context, int index) {
               return Divider(color: Colors.black.withAlpha(20));
