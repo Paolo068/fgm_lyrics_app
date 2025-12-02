@@ -9,7 +9,7 @@ class LyricRepository {
     try {
       final response = await rootBundle.loadString('assets/fr.json');
       final json = jsonDecode(response);
-      return (json['songs'] as List).map((e) => Lyric.fromMap(e)).toList();
+      return (json['songs'] as List).map((e) => Lyric.fromJson(e)).toList();
     } catch (e) {
       throw Exception('Failed to load French lyrics: $e');
     }
@@ -19,7 +19,7 @@ class LyricRepository {
     try {
       final response = await rootBundle.loadString('assets/en.json');
       final json = jsonDecode(response);
-      return (json['songs'] as List).map((e) => Lyric.fromMap(e)).toList();
+      return (json['songs'] as List).map((e) => Lyric.fromJson(e)).toList();
     } catch (e) {
       throw Exception('Failed to load English lyrics: $e');
     }

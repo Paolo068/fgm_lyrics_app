@@ -4,7 +4,7 @@ extension StringExtension on String {
 
   String get capitalize {
     final RegExp keyWords = RegExp(
-        r'\b(?:Jesus|Lord|Jésus|Sauveur|Seigneur|Savior|Saviour|God|Dieu|Thee|Thou|Thy|I|Him|Son|His)\b',
+        r'\b(?:Jesus|Lord|Jésus|Sauveur|Eternel|Seigneur|Savior|Saviour|God|Dieu|Thee|Thou|Thy|I|Him|Son|His)\b',
         caseSensitive: false);
     final firstWord = split(" ").first.capitalizeWord;
 

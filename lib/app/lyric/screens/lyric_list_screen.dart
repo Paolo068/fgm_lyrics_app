@@ -1,102 +1,94 @@
-import 'package:fgm_lyrics_app/app/locale/locale_controller.dart';
+import 'package:fgm_lyrics_app/app/locale/locale_provider.dart';
+import 'package:fgm_lyrics_app/app/locale/theme_provider.dart';
 import 'package:fgm_lyrics_app/app/lyric/lyric_controller.dart';
-import 'package:fgm_lyrics_app/app/lyric/screens/favorite_screen.dart';
-import 'package:fgm_lyrics_app/app/lyric/screens/lyric_detail_screen.dart';
 import 'package:fgm_lyrics_app/app/lyric/screens/widgets/lyric_tile.dart';
+import 'package:fgm_lyrics_app/app/payment/pay_wall_screen.dart';
+import 'package:fgm_lyrics_app/app/payment/payment_method_screen.dart';
+import 'package:fgm_lyrics_app/app/payment/payment_screen.dart';
+import 'package:fgm_lyrics_app/app/search/search_screen.dart';
 import 'package:fgm_lyrics_app/core/models/lyric.dart';
-import 'package:fgm_lyrics_app/core/shared/app_default_spacing.dart';
 import 'package:fgm_lyrics_app/core/utils/context_extension.dart';
+import 'package:fgm_lyrics_app/core/widgets/app_default_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gutter/flutter_gutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
-class LyricListScreen extends ConsumerWidget {
+class LyricListScreen extends ConsumerStatefulWidget {
   const LyricListScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final languageIsEnglish = ref.watch(deviceLocaleProvider) == 'en';
-    final lyrics =
-        languageIsEnglish
-            ? ref.watch(englishLyricProvider).value
-            : ref.watch(frenchLyricProvider).value;
+  ConsumerState<LyricListScreen> createState() => _LyricListScreenState();
+}
 
-    return Theme(
-      data: context.theme.copyWith(
-        textTheme: context.textTheme.apply(
-          fontFamily: GoogleFonts.barlow().fontFamily,
-        ),
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            TextButton(
-              onPressed: () {
-                ref
-                    .read(deviceLocaleProvider.notifier)
-                    .setLocale(languageIsEnglish ? 'fr' : 'en');
-              },
-              child: Text(languageIsEnglish ? 'FR' : 'EN'),
-            ),
-            IconButton(
-              onPressed: () {
-                context.push(
-                  FavoriteScreen(languageIsEnglish: languageIsEnglish),
-                );
-              },
-              icon: const Icon(Icons.favorite_border_rounded),
-            ),
-            SearchAnchor(
-              builder: (context, controller) {
-                return IconButton(
-                  onPressed: () {
-                    controller.clear();
-                    controller.openView();
-                  },
-                  icon: const Icon(Icons.search_outlined),
-                );
-              },
-              dividerColor: Colors.grey.shade400,
-              suggestionsBuilder: (context, controller) {
-                final filteredLyrics = filterLyrics(lyrics, controller);
-
-                return filteredLyrics.map((lyric) {
-                  return ListTile(
-                    title: Text(lyric.songTitle),
-                    onTap: () {
-                      controller.closeView(
-                        lyric.songTitle,
-                      ); // Close search on selection
-                      context.push(
-                        LyricDetailScreen(
-                          lyric: lyric,
-                          languageIsEnglish: languageIsEnglish,
-                        ),
-                      );
-                    },
-                  );
-                }).toList();
-              },
-            ),
-          ],
-          title: Text(languageIsEnglish ? 'English' : 'French'),
-        ),
-        body: AppDefaultSpacing(
-          child: ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              final lyric = lyrics?[index];
-              return LyricTile(
-                lyric: lyric,
-                languageIsEnglish: languageIsEnglish,
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return Divider(color: Colors.black.withAlpha(20));
-            },
-            itemCount: lyrics?.length ?? 0,
+class _LyricListScreenState extends ConsumerState<LyricListScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WoltModalSheet.show(
+        context: context,
+        barrierDismissible: false,
+        enableDrag: false,
+        pageListBuilder: (bottomSheetContext) => [
+          SliverWoltModalSheetPage(
+            mainContentSliversBuilder: (context) => [
+              PayWallScreen(
+                onTap: () {
+                  WoltModalSheet.of(bottomSheetContext).showNext();
+                },
+              ),
+            ],
           ),
-        ),
+
+          SliverWoltModalSheetPage(
+            mainContentSliversBuilder: (context) => [
+              PaymentMethodScreen(
+                onTap: () {
+                  WoltModalSheet.of(bottomSheetContext).showNext();
+                },
+              ),
+            ],
+          ),
+
+          SliverWoltModalSheetPage(
+            mainContentSliversBuilder: (context) => [const PaymentScreen()],
+          ),
+        ],
+      );
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final languageIsEnglish =
+        ref.watch(deviceLocaleProvider) == LanguageEnum.en.name;
+    final lyrics = languageIsEnglish
+        ? ref.watch(englishHymnProvider).requireValue
+        : ref.watch(frenchHymnProvider).requireValue;
+    debugPrint('lyrics: ${lyrics.length}');
+    return Scaffold(
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.translate),
+            onPressed: () {
+              ref.read(deviceLocaleProvider.notifier).changeLocale();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.dark_mode_rounded),
+            onPressed: () => ref.read(themeProvider.notifier).toggleTheme(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.search_rounded),
+            onPressed: () => context.push(const SearchScreen()),
+          ),
+        ],
+        title: const Text("Hymns"),
       ),
+      body: AppDefaultSpacing(child: LyricListView(lyrics: lyrics)),
     );
   }
 
@@ -109,5 +101,26 @@ class LyricListScreen extends ConsumerWidget {
             )
             .toList() ??
         [];
+  }
+}
+
+class LyricListView extends StatelessWidget {
+  const LyricListView({super.key, required this.lyrics});
+
+  final List<Lyric> lyrics;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        final lyric = lyrics[index];
+        return LyricTile(lyric: lyric);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const GutterSmall();
+      },
+      itemCount: lyrics.length,
+    );
   }
 }

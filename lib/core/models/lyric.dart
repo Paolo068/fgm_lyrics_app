@@ -1,8 +1,6 @@
-import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
-import 'package:equatable/equatable.dart';
-
-class Lyric extends Equatable {
+class Lyric {
   final String songTitle;
   final int songId;
   final dynamic id;
@@ -11,13 +9,13 @@ class Lyric extends Equatable {
   final String author;
   final List<String> enLyrics;
   const Lyric({
-    required this.songTitle,
-    required this.songId,
+    this.songTitle = '',
+    this.songId = 0,
     required this.id,
-    required this.chorus,
-    required this.key,
-    required this.author,
-    required this.enLyrics,
+    this.chorus = '',
+    this.key = '',
+    this.author = '',
+    this.enLyrics = const [],
   });
 
   Lyric copyWith({
@@ -40,7 +38,19 @@ class Lyric extends Equatable {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  factory Lyric.fromJson(Map<String, dynamic> json) {
+    return Lyric(
+      songTitle: json['songTitle'],
+      songId: json['songId'],
+      id: json['id'],
+      chorus: json['chorus'],
+      key: json['key'],
+      author: json['author'],
+      enLyrics: List<String>.from(json['enLyrics']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'songTitle': songTitle,
       'songId': songId,
@@ -52,29 +62,33 @@ class Lyric extends Equatable {
     };
   }
 
-  factory Lyric.fromMap(Map<String, dynamic> map) {
-    return Lyric(
-      songTitle: map['songTitle'] ?? '',
-      songId: map['songId']?.toInt() ?? 0,
-      id: map['id'],
-      chorus: map['chorus'] ?? '',
-      key: map['key'] ?? '',
-      author: map['author'] ?? '',
-      enLyrics: List<String>.from(map['enLyrics'] ?? const []),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Lyric.fromJson(String source) => Lyric.fromMap(json.decode(source));
-
   @override
   String toString() {
-    return 'Lyric(songTitle: $songTitle, songId: $songId, id: $id, chorus: $chorus, key: $key, author: $author, enLyrics: $enLyrics)';
+    return '''Lyric(songTitle: $songTitle, songId: $songId, id: $id, chorus: $chorus, key: $key, author: $author, enLyrics: $enLyrics)''';
   }
 
   @override
-  List<Object> get props {
-    return [songTitle, songId, id, chorus, key, author, enLyrics];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Lyric &&
+        other.songTitle == songTitle &&
+        other.songId == songId &&
+        other.id == id &&
+        other.chorus == chorus &&
+        other.key == key &&
+        other.author == author &&
+        listEquals(other.enLyrics, enLyrics);
+  }
+
+  @override
+  int get hashCode {
+    return songTitle.hashCode ^
+        songId.hashCode ^
+        id.hashCode ^
+        chorus.hashCode ^
+        key.hashCode ^
+        author.hashCode ^
+        enLyrics.hashCode;
   }
 }
